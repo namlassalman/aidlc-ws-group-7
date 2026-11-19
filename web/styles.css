@@ -2,6 +2,11 @@
  * Roster page shell styles and design tokens (design-system-mapping.md). Owned by the skeleton.
  * Feature Units add only selectors scoped under #roster or #rules, in their own page module,
  * and use these tokens and the shared classes (.gap, .suggested, .locked, .you).
+ *
+ * Brand: AI-DLC Hospital. Minimal and calm for clinical use: white surfaces on a soft grey page,
+ * the blue-violet to magenta brand gradient used only as an accent (the logo mark and a thin line
+ * under the header). Blue-violet (#4A00FF, 7.7:1 on white) carries interactive colour; magenta
+ * (#FF00FF, 3.1:1 on white) is decorative only and never used for text.
  */
 :root {
   --space-1: 4px;
@@ -10,16 +15,32 @@
   --space-4: 24px;
   --space-5: 32px;
   --space-6: 48px;
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --text: #1a1a1a;
+  --font:
+    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --brand-start: #4a00ff;
+  --brand-end: #ff00ff;
+  --brand-gradient: linear-gradient(90deg, var(--brand-start), var(--brand-end));
+
+  --text: #16161d;
   --bg: #ffffff;
-  --muted: #595959;
-  --accent: #005ea5;
+  --page: #f6f6fa;
+  --muted: #5b5b6b;
+  --accent: var(--brand-start);
+  --accent-hover: #3a00cc;
+  --accent-soft: #efe9ff;
+  --line: #e4e4ee;
+  --border: #c9c9d6;
   --warn-bg: #fff4e5;
   --warn-text: #7a3e00;
   --error-bg: #fdecea;
   --error-text: #8a1c1c;
-  --border: #8c8c8c;
+  --ok-bg: #e9f7ef;
+  --ok-text: #135c33;
+
+  --radius: 10px;
+  --radius-small: 6px;
+  --shadow: 0 1px 2px rgba(22, 22, 29, 0.06), 0 4px 16px rgba(22, 22, 29, 0.04);
 }
 
 * {
@@ -29,10 +50,11 @@
 body {
   margin: 0;
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--text);
-  background: var(--bg);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
 }
 
 :focus-visible {
@@ -44,30 +66,75 @@ body {
   display: none !important;
 }
 
+/* Buttons: primary is solid blue-violet; secondary is outlined. */
 button {
   min-height: 44px;
   min-width: 44px;
   padding: var(--space-2) var(--space-3);
   font: inherit;
+  font-weight: 600;
   color: var(--bg);
   background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius-small);
   cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+}
+
+.button-secondary,
+.week-picker button,
+[data-testid="roster-publish-cancel-button"] {
+  color: var(--accent);
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+.button-secondary:hover:not(:disabled),
+.week-picker button:hover:not(:disabled),
+[data-testid="roster-publish-cancel-button"]:hover:not(:disabled) {
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+select,
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+select {
+  min-height: 40px;
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
 }
 
 .skip-link {
   position: absolute;
   left: var(--space-2);
   top: -100px;
-  padding: var(--space-2);
+  z-index: 20;
+  padding: var(--space-2) var(--space-3);
   background: var(--bg);
   color: var(--accent);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow);
 }
 
 .skip-link:focus {
@@ -83,46 +150,112 @@ button:disabled {
   white-space: nowrap;
 }
 
+/* Header: anchored at the top, logo on the left, signed-in user on the right. */
 .shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg);
+  box-shadow: 0 1px 0 var(--line);
 }
 
-.shell-header h1 {
-  margin: 0 auto 0 0;
-  font-size: 1.5rem;
+.shell-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 3px;
+  background: var(--brand-gradient);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-mark {
+  flex: none;
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.shell-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .signed-in {
   margin: 0;
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.9rem;
   color: var(--muted);
+  background: var(--page);
+  border: 1px solid var(--line);
+  border-radius: 999px;
 }
 
+/* Week picker: a quiet bar between the header and the roster. */
 .week-picker {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
-  padding: var(--space-3);
+  margin: var(--space-4) var(--space-4) 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .week-picker h2 {
   margin: 0;
-  font-size: 1.25rem;
+  min-width: 12ch;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .error-banner {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin: 0 var(--space-3);
+  margin: var(--space-3) var(--space-4) 0;
   padding: var(--space-2) var(--space-3);
   color: var(--error-text);
   background: var(--error-bg);
-  border: 1px solid var(--error-text);
+  border: 1px solid #f1b8b2;
+  border-left: 4px solid var(--error-text);
+  border-radius: var(--radius-small);
 }
 
 .error-banner p {
@@ -130,29 +263,63 @@ button:disabled {
   flex: 1;
 }
 
+/* Main layout: the roster card, and the coordinator panel beside it on wide screens. */
 .layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-3);
-  padding: var(--space-3);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.roster,
+.panel {
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.roster:focus {
+  outline: none;
 }
 
 .panel [role="tablist"] {
   display: flex;
   gap: var(--space-1);
-  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
 }
 
 .panel [role="tab"] {
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  white-space: nowrap;
+  margin-bottom: -1px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+}
+
+.panel [role="tab"]:hover:not(:disabled) {
   color: var(--accent);
-  background: var(--bg);
+  background: transparent;
+  border-color: transparent;
+  border-bottom-color: var(--border);
 }
 
 .panel [role="tab"][aria-selected="true"] {
-  color: var(--bg);
-  background: var(--accent);
+  color: var(--accent);
+  background: transparent;
+  border-bottom-color: var(--accent);
 }
 
+/* Shared roster states. */
 .gap {
   color: var(--warn-text);
   background: var(--warn-bg);
@@ -174,25 +341,109 @@ button:disabled {
 /* Tables in the roster area: the week grid and the coverage tables. */
 #roster table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin: var(--space-3) 0;
+  font-size: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+
+/* On narrow screens the grid scrolls sideways inside its card, never the whole page. */
+#roster [data-testid="roster-grid-holder"] {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The week grid: a fixed slot column, then seven equal day columns. */
+#roster table.roster-grid {
+  table-layout: fixed;
+}
+
+#roster table.roster-grid thead th:first-child {
+  width: 4.5rem;
+}
+
+#roster table.roster-grid thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#roster caption {
+  padding-bottom: var(--space-2);
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 #roster th,
 #roster td {
-  border: 1px solid var(--border);
   padding: var(--space-2);
   text-align: left;
   vertical-align: top;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+#roster tr > :last-child {
+  border-right: 0;
+}
+
+#roster tbody tr:last-child > * {
+  border-bottom: 0;
 }
 
 #roster thead th {
-  background: #f2f2f2;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: #f9f8ff;
+}
+
+#roster tbody th {
+  width: 4.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: #f9f8ff;
 }
 
 #roster td ul {
   margin: 0;
-  padding-left: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+/* One duty in a grid cell: a modality tag over its places. */
+#roster [data-testid="roster-duty"] {
+  margin-bottom: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-small);
+}
+
+#roster [data-testid="roster-duty"]:last-child {
+  margin-bottom: 0;
+}
+
+#roster [data-testid="roster-place"] {
+  padding: 1px 0;
+}
+
+#roster [data-testid="roster-place"] strong {
+  color: var(--accent);
+}
+
+#roster [data-testid="roster-place"][data-state="unfilled"] {
+  margin: 2px 0;
+  padding: 2px var(--space-1);
+  background: var(--warn-bg);
+  border-radius: 4px;
 }
 
 .roster-toolbar {
@@ -200,11 +451,20 @@ button:disabled {
   flex-wrap: wrap;
   gap: var(--space-2);
   align-items: center;
-  margin: var(--space-3) 0;
+  margin: 0 0 var(--space-3);
 }
 
 .roster-status {
-  font-weight: bold;
+  display: inline-block;
+  margin: 0;
+  padding: 2px var(--space-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
 }
 
 .roster-unfilled,
@@ -213,8 +473,13 @@ button:disabled {
   background: var(--warn-bg);
 }
 
+.roster-unfilled {
+  font-weight: 700;
+}
+
 .roster-suggestion {
   font-style: italic;
+  color: var(--muted);
 }
 
 .roster-locked,
@@ -222,9 +487,38 @@ button:disabled {
   color: var(--muted);
 }
 
+.roster-modality {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 .roster-message,
 .rules-message {
   margin: var(--space-2) 0;
+  color: var(--muted);
+}
+
+/* The publish confirmation dialog. */
+#roster dialog {
+  max-width: 28rem;
+  padding: var(--space-4);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(22, 22, 29, 0.18);
+}
+
+#roster dialog::backdrop {
+  background: rgba(22, 22, 29, 0.35);
+}
+
+#roster dialog > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 /* The rules panel list. */
@@ -235,25 +529,164 @@ button:disabled {
 }
 
 .rules-row {
-  border: 1px solid var(--border);
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   margin-bottom: var(--space-2);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
 }
 
-.rules-type,
+.rules-row label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rules-type {
+  font-weight: 600;
+  color: var(--text);
+}
+
 .rules-strength {
+  padding: 0 var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+}
+
+.rules-description {
+  flex-basis: 100%;
   color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* The leave section: full width below the roster and the panel, for every role. */
+#leave {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+
+#leave form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: flex-end;
+  margin: var(--space-3) 0;
+}
+
+#leave label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+#leave input {
+  font: inherit;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border);
+}
+
+#leave table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-3) 0;
+}
+
+#leave th,
+#leave td {
+  border: 1px solid var(--border);
+  padding: var(--space-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+#leave thead th {
+  background: #f2f2f2;
+}
+
+#leave td button + button {
+  margin-left: var(--space-2);
+}
+
+.leave-pending {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+}
+
+.leave-message {
+  margin: var(--space-2) 0;
 }
 
 @media (min-width: 1024px) {
   .layout {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: start;
+  }
+
+  /* Doctors have no side panel: the roster takes the full width. */
+  .layout:not(:has(> .panel:not([hidden]))) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    position: sticky;
+    top: 96px;
   }
 }
 
 @media (max-width: 767px) {
+  .shell-header {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .signed-in {
+    font-size: 0.8rem;
+  }
+
+  .week-picker {
+    gap: var(--space-2);
+    margin: var(--space-3) var(--space-3) 0;
+  }
+
+  .week-picker button {
+    padding: var(--space-2);
+    white-space: nowrap;
+  }
+
+  .week-picker h2 {
+    min-width: 0;
+    font-size: 1rem;
+  }
+
+  #roster table.roster-grid {
+    min-width: 860px;
+  }
+
+  .layout {
+    padding: var(--space-3);
+  }
+
+  .roster,
+  .panel {
+    padding: var(--space-3);
+  }
+
   .week-picker button,
   .shell-header button {
     min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
   }
 }

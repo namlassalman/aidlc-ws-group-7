@@ -9,7 +9,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Radiology Roster</title>
+    <title>Radiology Roster · AI-DLC Hospital</title>
+    <meta name="theme-color" content="#4A00FF" />
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="app.js"></script>
@@ -17,22 +18,53 @@
   <body data-roster-shell>
     <a class="skip-link" href="#roster" data-testid="shell-skip-link">Skip to roster</a>
 
-    <header class="shell-header">
-      <h1>Radiology Roster</h1>
-      <p id="signed-in" class="signed-in" data-testid="shell-signed-in">Signing in...</p>
-      <button type="button" id="sign-out" data-testid="shell-sign-out-button" hidden>
-        Sign out
-      </button>
+    <header class="shell-header" data-testid="shell-header">
+      <div class="brand" data-testid="shell-brand">
+        <svg
+          class="brand-mark"
+          viewBox="0 0 40 40"
+          width="40"
+          height="40"
+          role="img"
+          aria-label="AI-DLC Hospital logo"
+          data-testid="shell-brand-logo"
+        >
+          <defs>
+            <linearGradient id="brand-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4A00FF" />
+              <stop offset="1" stop-color="#FF00FF" />
+            </linearGradient>
+          </defs>
+          <rect width="40" height="40" rx="10" fill="url(#brand-gradient)" />
+          <path d="M16.5 9h7v7.5H31v7h-7.5V31h-7v-7.5H9v-7h7.5z" fill="#ffffff" />
+        </svg>
+        <div class="brand-text">
+          <h1 class="brand-name" data-testid="shell-brand-name">AI-DLC Hospital</h1>
+          <p class="brand-sub" data-testid="shell-brand-sub">Radiology Roster</p>
+        </div>
+      </div>
+      <div class="shell-user">
+        <p id="signed-in" class="signed-in" data-testid="shell-signed-in">Signing in...</p>
+        <button
+          type="button"
+          id="sign-out"
+          class="button-secondary"
+          data-testid="shell-sign-out-button"
+          hidden
+        >
+          Sign out
+        </button>
+      </div>
     </header>
 
-    <nav class="week-picker" aria-label="Week">
+    <nav class="week-picker" aria-label="Week" data-testid="week-picker">
       <button
         type="button"
         id="prev-week"
         aria-label="Previous week"
         data-testid="week-picker-prev-button"
       >
-        &lt; Prev week
+        <span aria-hidden="true">&larr;</span> Previous
       </button>
       <h2 id="week-label" aria-live="polite" data-testid="week-picker-label">Week of ...</h2>
       <button
@@ -41,7 +73,7 @@
         aria-label="Next week"
         data-testid="week-picker-next-button"
       >
-        Next week &gt;
+        Next <span aria-hidden="true">&rarr;</span>
       </button>
     </nav>
 
@@ -53,7 +85,12 @@
       hidden
     >
       <p id="error-message"></p>
-      <button type="button" id="error-dismiss" data-testid="shell-error-dismiss-button">
+      <button
+        type="button"
+        id="error-dismiss"
+        class="button-secondary"
+        data-testid="shell-error-dismiss-button"
+      >
         Dismiss
       </button>
     </div>
@@ -94,6 +131,8 @@
           data-testid="rules-root"
         ></section>
       </aside>
+
+      <section id="leave" class="leave" aria-label="Leave" data-testid="leave-root"></section>
     </main>
   </body>
 </html>

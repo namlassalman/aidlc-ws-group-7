@@ -91,9 +91,15 @@ export function weekFromSearch(search, now = new Date()) {
   return parseDate(week) === undefined ? mondayOf(todayIso(now)) : mondayOf(week);
 }
 
-/** Which page modules to load for a user: roster for everyone, rules for coordinators only. */
+/**
+ * Which page modules to load for a user: roster and leave for everyone, rules for coordinators
+ * only. A signed-out caller (no user) gets the roster only.
+ */
 export function featuresToMount(user) {
   const features = [{ name: "roster", src: "./features/roster.js", target: "roster" }];
+  if (user?.role === "coordinator" || user?.role === "doctor") {
+    features.push({ name: "leave", src: "./features/leave.js", target: "leave" });
+  }
   if (user?.role === "coordinator") {
     features.push({ name: "rules", src: "./features/rules.js", target: "rules" });
   }

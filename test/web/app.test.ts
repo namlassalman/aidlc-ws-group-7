@@ -73,22 +73,44 @@ describe("?week= parsing", () => {
 });
 
 describe("mount decision", () => {
-  it("loads rules.js only for a coordinator", () => {
+  it("loads leave.js for every role and rules.js only for a coordinator", () => {
     expect(featuresToMount({ id: "coord1", role: "coordinator" }).map((f) => f.name)).toEqual([
       "roster",
+      "leave",
       "rules",
     ]);
     expect(featuresToMount({ id: "ben.ochieng", role: "doctor" }).map((f) => f.name)).toEqual([
       "roster",
+      "leave",
     ]);
+  });
+
+  it("loads only the roster without a signed-in role", () => {
     expect(featuresToMount(undefined).map((f) => f.name)).toEqual(["roster"]);
+    expect(featuresToMount({ id: "x", role: "visitor" }).map((f) => f.name)).toEqual(["roster"]);
   });
 
   it("mounts each feature into its own element", () => {
     expect(featuresToMount({ id: "coord1", role: "coordinator" })).toEqual([
       { name: "roster", src: "./features/roster.js", target: "roster" },
+      { name: "leave", src: "./features/leave.js", target: "leave" },
       { name: "rules", src: "./features/rules.js", target: "rules" },
     ]);
+  });
+
+  it("has a #leave element outside the coordinator panel, so doctors keep it", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const { join } = await import("node:path");
+    const html = await readFile(join(process.cwd(), "web", "index.html"), "utf8");
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const leave = doc.getElementById("leave");
+    expect(leave).not.toBeNull();
+    expect(leave?.closest("#panel")).toBeNull();
+  });
+
+  it("loads a leave module that exports mount", async () => {
+    const leave = await import("../../web/features/leave.js");
+    expect(typeof leave.mount).toBe("function");
   });
 });
 

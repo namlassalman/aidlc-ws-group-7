@@ -1,0 +1,15 @@
+{
+  "name": "roster-rpa",
+  "private": true,
+  "description": "RPA (browser robot) tests for the Radiology Roster page. Kept apart from the app's own package.json.",
+  "type": "module",
+  "scripts": {
+    "install-browser": "playwright install chromium",
+    "test:local": "playwright test --project=local",
+    "test:deployed": "playwright test --project=deployed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
