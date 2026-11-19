@@ -8,7 +8,7 @@ which the coordinator reviews and publishes. Doctors request leave and see
 their own duties. See [`vision.md`](vision.md) for the full description.
 
 Built by group 7 at an AI-DLC workshop. This repository is a snapshot of the
-group's landed `main` (skeleton, doctors, duties and rules Units); the
+group's landed `main` with all six Units (skeleton, doctors, duties, leave, rules and roster); the
 team's split of the work is in [`unit_split.md`](unit_split.md).
 
 ## Stack
