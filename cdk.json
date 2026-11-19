@@ -1,0 +1,10 @@
+{
+  "app": "npx tsx infra/app.ts",
+  "watch": {
+    "include": ["infra/**", "src/**", "web/**"],
+    "exclude": ["node_modules", "cdk.out", "test", "coverage", "dist"]
+  },
+  "context": {
+    "@aws-cdk/core:newStyleStackSynthesis": true
+  }
+}

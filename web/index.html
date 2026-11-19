@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+  Roster page shell (walking skeleton). No inline script or style: the CSP from CloudFront
+  allows only same-origin scripts and styles. web/app.js signs in, then mounts
+  web/features/roster.js into #roster for everyone and web/features/rules.js into #rules for
+  coordinators. Feature Units edit only their own file in web/features/.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Radiology Roster</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body data-roster-shell>
+    <a class="skip-link" href="#roster" data-testid="shell-skip-link">Skip to roster</a>
+
+    <header class="shell-header">
+      <h1>Radiology Roster</h1>
+      <p id="signed-in" class="signed-in" data-testid="shell-signed-in">Signing in...</p>
+      <button type="button" id="sign-out" data-testid="shell-sign-out-button" hidden>
+        Sign out
+      </button>
+    </header>
+
+    <nav class="week-picker" aria-label="Week">
+      <button
+        type="button"
+        id="prev-week"
+        aria-label="Previous week"
+        data-testid="week-picker-prev-button"
+      >
+        &lt; Prev week
+      </button>
+      <h2 id="week-label" aria-live="polite" data-testid="week-picker-label">Week of ...</h2>
+      <button
+        type="button"
+        id="next-week"
+        aria-label="Next week"
+        data-testid="week-picker-next-button"
+      >
+        Next week &gt;
+      </button>
+    </nav>
+
+    <div
+      id="error-banner"
+      class="error-banner"
+      role="alert"
+      data-testid="shell-error-banner"
+      hidden
+    >
+      <p id="error-message"></p>
+      <button type="button" id="error-dismiss" data-testid="shell-error-dismiss-button">
+        Dismiss
+      </button>
+    </div>
+
+    <div id="status" class="visually-hidden" aria-live="polite" data-testid="shell-status"></div>
+
+    <main class="layout">
+      <section
+        id="roster"
+        class="roster"
+        tabindex="-1"
+        aria-label="Roster"
+        data-testid="roster-root"
+      ></section>
+
+      <aside id="panel" class="panel" aria-label="Coordinator panel" data-testid="panel" hidden>
+        <div
+          id="panel-tabs"
+          role="tablist"
+          aria-label="Coordinator panel tabs"
+          data-testid="panel-tabs"
+        >
+          <button
+            type="button"
+            role="tab"
+            id="tab-rules"
+            aria-controls="rules"
+            aria-selected="true"
+            data-testid="panel-tab-rules"
+          >
+            Rules
+          </button>
+        </div>
+        <section
+          id="rules"
+          role="tabpanel"
+          aria-labelledby="tab-rules"
+          data-testid="rules-root"
+        ></section>
+      </aside>
+    </main>
+  </body>
+</html>
