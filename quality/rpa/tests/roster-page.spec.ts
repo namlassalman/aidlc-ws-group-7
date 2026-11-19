@@ -204,7 +204,7 @@ test.describe("Doctor", () => {
   test("RPA-12 @local-only a week with only a draft shows 'not published yet' to a doctor", async ({
     browser,
   }) => {
-    const page = await signIn(browser, CHEN, "2026-12-28");
+    const page = await signIn(browser, CHEN, "2027-01-04");
     await expect(page.getByTestId("roster-message")).toHaveText("This week is not published yet.");
     await expect(page.getByTestId("roster-grid")).toHaveCount(0);
   });

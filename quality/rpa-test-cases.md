@@ -13,7 +13,7 @@ person would, using the page's `data-testid` attributes. Every case saves a scre
 
 | Mode | Page | Sign-in | API and data | When |
 |---|---|---|---|---|
-| `local` | the real `web/` files | a stand-in for Cognito that returns straight to the page as the chosen user | the real API on a fresh local server (port 3100), loaded with the four-week UAT dataset (`quality/uat-data.md`) through the API | any time; no AWS needed |
+| `local` | the real `web/` files | a stand-in for Cognito that returns straight to the page as the chosen user | the real API on a fresh local server (port 3100), loaded with the seven-week UAT dataset (23 Nov to 10 Jan) (`quality/uat-data.md`) through the API | any time; no AWS needed |
 | `deployed` | the real site (`SITE_URL`) | the real Cognito managed login, typing the username and password | the deployed API and DynamoDB, with `npm run seed` loaded | after each deploy |
 
 Local mode changes nothing in `web/`. It serves the page files as they are and forwards the
@@ -46,7 +46,7 @@ npm run test:deployed
 Before a deployed run: `npm run seed`, and each test user has signed in once and set a
 permanent password (Cognito asks for a new password on first sign-in, which the robot does not
 handle). Cases tagged `@local-only` (RPA-11, RPA-12) are skipped on the deployed site, because the
-deployed seed has only the example week.
+deployed seed has only the example week (unless the seven-week loader has been run there too: `quality/uat-data.md`).
 
 ## 3. Cases
 
@@ -75,7 +75,7 @@ deployed seed has only the example week.
 | RPA-09 | Chen | week of 12-07 | PUBLISHED; Chen is nowhere in the grid (her leave week); 12-08 AM XR shows UNFILLED with no suggestion | PASS |
 | RPA-10 | Ben | week of 12-07; tick and untick "Only my duties" | three places marked "(you)"; ticked, only those three show and no UNFILLED; unticked, all places return | PASS |
 | RPA-11 `@local-only` | Chen | week of 12-14; tick "Only my duties" | four places marked "(you)" (12-14 CALL XR, 12-16 PM US, 12-17 AM XR, 12-18 PM US); ticked, only those four | PASS |
-| RPA-12 `@local-only` | Chen | week of 12-28 (draft only) | "This week is not published yet." and no grid | PASS |
+| RPA-12 `@local-only` | Chen | week of 01-04 (draft only) | "This week is not published yet." and no grid | PASS |
 
 ### Session
 

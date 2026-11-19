@@ -147,7 +147,8 @@ export class RosterStack extends Stack {
       runtime: Runtime.NODEJS_22_X,
       architecture: Architecture.ARM_64,
       memorySize: 1024,
-      timeout: Duration.seconds(15),
+      // 20 s: the roster stops a slow run at a 15 s soft cut-off and needs time left to answer 409.
+      timeout: Duration.seconds(20),
       logGroup,
       environment,
       bundling: {

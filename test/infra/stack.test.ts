@@ -82,12 +82,12 @@ describe("Lambda", () => {
     };
   };
 
-  it("runs Node.js 22 on arm64 with 1024 MB and 15 s, with the table names and time zone", () => {
+  it("runs Node.js 22 on arm64 with 1024 MB and 20 s, with the table names and time zone", () => {
     const props = apiFunction();
     expect(props).toMatchObject({
       Architectures: ["arm64"],
       MemorySize: 1024,
-      Timeout: 15,
+      Timeout: 20,
       Handler: "index.handler",
     });
     expect(Object.keys(props.Environment.Variables).sort()).toEqual([
