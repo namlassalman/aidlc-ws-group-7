@@ -171,6 +171,80 @@ button:disabled {
   font-weight: bold;
 }
 
+/* Tables in the roster area: the week grid and the coverage tables. */
+#roster table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-3) 0;
+}
+
+#roster th,
+#roster td {
+  border: 1px solid var(--border);
+  padding: var(--space-2);
+  text-align: left;
+  vertical-align: top;
+}
+
+#roster thead th {
+  background: #f2f2f2;
+}
+
+#roster td ul {
+  margin: 0;
+  padding-left: var(--space-3);
+}
+
+.roster-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin: var(--space-3) 0;
+}
+
+.roster-status {
+  font-weight: bold;
+}
+
+.roster-unfilled,
+.roster-reason {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+}
+
+.roster-suggestion {
+  font-style: italic;
+}
+
+.roster-locked,
+.roster-modality {
+  color: var(--muted);
+}
+
+.roster-message,
+.rules-message {
+  margin: var(--space-2) 0;
+}
+
+/* The rules panel list. */
+.rules-list {
+  list-style: none;
+  margin: var(--space-3) 0;
+  padding: 0;
+}
+
+.rules-row {
+  border: 1px solid var(--border);
+  padding: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.rules-type,
+.rules-strength {
+  color: var(--muted);
+}
+
 @media (min-width: 1024px) {
   .layout {
     grid-template-columns: 1fr 320px;
