@@ -10,13 +10,16 @@
  *   cancelled and pending), so the test week keeps only Chen Li's vision.md leave;
  * - no new rules: the three example rules stay the only rules;
  * - rosters: 23 Nov to 28 Dec generated and published one week at a time with the roster
- *   service, and 4 Jan generated as a draft only. The week of 7 Dec gets no roster, so the
- *   coordinator generates it in the demo (Demo Test Plan C2).
+ *   service, and 4 Jan generated as a draft only. The week of 7 Dec is then generated from its
+ *   seeded data and published too, so every week from 23 Nov to 3 Jan is published. With
+ *   `--no-test-week` the week of 7 Dec gets no roster, for a demo where the coordinator
+ *   generates it (Demo Test Plan C2).
  *
- * Fixed ids and plain overwrites, so running it again leaves the same duties and leave, and
- * generates and publishes those weeks again.
+ * The script never writes duties or leave into the week of 7 Dec, and adds no rules. Fixed ids
+ * and plain overwrites, so running it again leaves the same duties and leave, and generates and
+ * publishes those weeks again.
  *
- *   AWS_PROFILE=deploy AWS_REGION=us-west-2 npx tsx scripts/seed-extra-weeks.ts
+ *   AWS_PROFILE=deploy AWS_REGION=us-west-2 npx tsx scripts/seed-extra-weeks.ts [--no-test-week]
  */
 import { putItem } from "../src/shared/db.js";
 import { addDays } from "../src/shared/time.js";
@@ -144,17 +147,21 @@ async function main(): Promise<void> {
     await write("leave", l.id, leaveItem(l));
   }
 
-  for (const weekStart of weeks) {
+  const publishTestWeek = !process.argv.includes("--no-test-week");
+  const runWeeks = publishTestWeek ? [...weeks, TEST_WEEK] : weeks;
+  for (const weekStart of runWeeks) {
     const now = new Date().toISOString();
     await generateRun({ weekStart, weeks: 1, now, deadline: new Deadline() });
-    if (PUBLISHED_WEEKS.includes(weekStart))
+    if (weekStart === TEST_WEEK || PUBLISHED_WEEKS.includes(weekStart))
       await publishRun({ weekStart, weeks: 1, now, deadline: new Deadline() });
   }
 
   console.log(
     `Added ${duties.length} duties and ${EXTRA_LEAVE.length} leave requests around the week of ` +
       `${TEST_WEEK}; published ${PUBLISHED_WEEKS.join(", ")}; draft only ${DRAFT_WEEKS.join(", ")}. ` +
-      `The week of ${TEST_WEEK} is unchanged and has no roster.`,
+      (publishTestWeek
+        ? `The week of ${TEST_WEEK} was generated from its seeded data and published.`
+        : `The week of ${TEST_WEEK} has no roster (--no-test-week).`),
   );
 }
 
